@@ -1,0 +1,268 @@
+*{
+    box-sizing: border-box;
+}
+
+body{
+}
+
+.container{
+    width:90%;
+    margin: 0 auto;
+    height: 100vh;
+    background-color:#E5E5E5
+
+}
+
+.tasks{
+width: 100%;
+display: flex;
+justify-content: center;
+text-align: center;
+}
+
+.tasks2{
+    display: flex;
+    align-items: center;
+align-content: center;
+    background-color: white;   
+    gap: 5rem; 
+    margin: 2rem 0 1rem;
+    padding: 0.5rem 2rem;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.tableContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1rem 0 1rem
+}
+
+table{
+border-collapse: collapse;
+width: 80%;
+background-color: white;
+box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+}
+
+
+thead{
+    background-color: grey;
+    color: white;
+}
+
+
+th,td{
+    text-align: left;
+}
+
+.addBtn{
+    display: flex;
+    width: 80%;
+    justify-content: flex-end;
+    margin: 1rem 0;
+}
+
+.activeAddBtn{
+    font-family: Arial;
+    color: #ffffff;
+    background: #2980b9;
+    padding: 10px 40px 10px 40px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .activeAddBtn:hover {
+    background: #3cb0fd;
+    background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+    text-decoration: none;
+  }
+  
+.spanAddNote{
+}
+
+  .spanForm{
+    width: 30rem;
+    background: white;
+    padding:1.5rem;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  }
+
+.addNoteH2{
+margin: 0 0 1rem;
+}
+
+.titleInput{
+    width: 100%;
+    margin: 0 0 1rem;
+    padding: 0.5rem;
+}
+
+.textInput{
+    width: 100%;
+    margin: 0 0 1rem;
+    padding: 0.5rem;
+    min-height: 6rem;
+    max-width: 100%;
+}
+
+.formInputs{
+    width: 100%;
+}
+
+.saveBtn{
+    font-family: Arial;
+    color: #ffffff;
+    background: #2980b9;
+    padding: 10px 40px 10px 40px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+.cancelBtn{
+    font-family: Arial;
+    background-color: white;
+    color: #2980b9;
+    padding: 10px 40px 10px 40px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+.alertComp{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 80%;
+    align-items: flex-end;
+    min-height:10rem; 
+}
+
+.deleteBox{
+    background-color: red;
+    display:flex;
+    max-height: 3rem;
+    align-items: center;
+    margin-left: 1rem;
+    width: 100%;
+    margin: 0px;
+    padding:0.5rem;
+    color: white;
+    border-radius: 5px;
+}
+
+.goAlert{
+    font-size: 1.5rem;
+    color: white;
+    margin: 0.5rem;
+}
+
+.deleteBtns{
+width: 45%;
+display: flex;
+justify-content: flex-end;
+}
+
+.yesBtn{
+    background-color: red;
+    border: 1px solid white;
+    color: white;
+    padding: 0.5rem 2rem;
+    margin-right: 0.5rem;
+    cursor: pointer;
+    border-radius: 5px;
+    outline: white;
+}
+
+.noBtn{
+    background-color: white;
+    border: 1px solid white;
+    color: red;
+    padding: 0.5rem 2rem;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* Mobile Responsive */
+
+@media (max-width: 450px ){
+
+
+body{
+    font-size: 0.5em;
+    background-color:#E5E5E5;
+}
+
+.container{
+    width: 100%;
+}
+
+.tasks2{
+    display: block;
+    margin: 0.5rem 0;
+}
+
+table{
+    width: 100%;
+}
+
+.tableContainer{
+margin: 0.5rem;
+}
+
+.addBtn{
+    width:auto;
+}
+
+.th-ID{
+    text-align: center;
+}
+
+.alertComp{
+display: flex;
+justify-content: center;
+align-items: flex-start;
+width: 90%;
+margin-bottom: 2rem;
+}
+
+.alertComp1{
+}
+
+.spanForm{
+    max-width: 20rem;
+}
+
+input, textArea{
+    font-size: 0.7rem;
+}
+
+.cancelBtn,.saveBtn{
+font-size: 0.7rem;
+}
+
+.deleteBox{
+    flex-direction: column;
+    max-height: fit-content;
+    width: auto;
+
+}
+
+.deleteBtns{
+    width: auto;
+}
+
+.yesBtn{
+    padding: 0.3rem 1.2rem;
+}
+
+.noBtn{
+    padding: 0.3rem 1.2rem;
+}
+
+}
