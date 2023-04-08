@@ -1,16 +1,16 @@
 {
-  "main.css": "/NotesApp/static/css/main.ac7656f1.chunk.css",
-  "main.js": "/NotesApp/static/js/main.4d7557d8.chunk.js",
-  "main.js.map": "/NotesApp/static/js/main.4d7557d8.chunk.js.map",
-  "static/js/1.271d1efb.chunk.js": "/NotesApp/static/js/1.271d1efb.chunk.js",
-  "static/js/1.271d1efb.chunk.js.map": "/NotesApp/static/js/1.271d1efb.chunk.js.map",
-  "static/js/2.f41e5347.chunk.js": "/NotesApp/static/js/2.f41e5347.chunk.js",
-  "static/js/2.f41e5347.chunk.js.map": "/NotesApp/static/js/2.f41e5347.chunk.js.map",
-  "runtime~main.js": "/NotesApp/static/js/runtime~main.3c9691db.js",
-  "runtime~main.js.map": "/NotesApp/static/js/runtime~main.3c9691db.js.map",
-  "static/media/logo.svg": "/NotesApp/static/media/logo.06e73328.svg",
-  "static/css/main.ac7656f1.chunk.css.map": "/NotesApp/static/css/main.ac7656f1.chunk.css.map",
-  "index.html": "/NotesApp/index.html",
-  "precache-manifest.1183d9c5d73a1b889f3d9601216b37f8.js": "/NotesApp/precache-manifest.1183d9c5d73a1b889f3d9601216b37f8.js",
-  "service-worker.js": "/NotesApp/service-worker.js"
+  "files": {
+    "main.css": "/NotesApp/static/css/main.b942e2c4.css",
+    "main.js": "/NotesApp/static/js/main.2ef2ca30.js",
+    "static/js/787.5cf4e54a.chunk.js": "/NotesApp/static/js/787.5cf4e54a.chunk.js",
+    "static/media/logo.svg": "/NotesApp/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "index.html": "/NotesApp/index.html",
+    "main.b942e2c4.css.map": "/NotesApp/static/css/main.b942e2c4.css.map",
+    "main.2ef2ca30.js.map": "/NotesApp/static/js/main.2ef2ca30.js.map",
+    "787.5cf4e54a.chunk.js.map": "/NotesApp/static/js/787.5cf4e54a.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b942e2c4.css",
+    "static/js/main.2ef2ca30.js"
+  ]
 }
