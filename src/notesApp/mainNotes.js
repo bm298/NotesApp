@@ -1,70 +1,75 @@
 import React from "react";
 import './mainNotesCss.css';
-import { FaLeaf, FaTrashAlt} from 'react-icons/fa';
-import {AiFillEdit,AiOutlineArrowDown,AiOutlineArrowUp} from 'react-icons/ai';
+import {FaEdit} from 'react-icons/fa';
 import {TiArrowSortedDown,TiArrowSortedUp} from 'react-icons/ti'
 import SideTasksCompleted from "./SideTasksCompleted";
 import SidebarNotesEl from "./sidebarNotes";
 import SideDeleteNotes from "./SideDeleteNotes";
 
-
-
-
 export default function AddNote(){
+// STATE START
+    const [notes, setNotes] = React.useState( notes ? [] : (storedValues) )
     const [isChecked, setisChecked]= React.useState(false)
+    const [sorted, setSorted]= React.useState(true)
+    const [sorted1, setSorted1]= React.useState(true)
+    const [isShown, setIsShown] = React.useState(false)
+    const [deleteBtn, setDeleteBtn]= React.useState(false)
+    const [notesToDelete, setNotesToDelete] =React.useState([]);
+    const [calculateAmountDue, setCalculateAmountDue]= React.useState()
+    const [pushedCurrentNoteId, setPushedCurrentNoteId] = React.useState()
+    const [toggleUpdate, setToggleUpdate] = React.useState(false)
+    const [formErrors, setFormErrors] = React.useState([])
+    const [isSubmit, setIsSubmit] = React.useState(false)
+    const [formData, setFormData] = React.useState({
+        id: notes.length+1,
+        ShiftDate: "",
+        Company: "",
+        Hours:"",
+        Rate: "",
+        Extra:"",
+        Paid:"",
+        AmountDue:"",
+        Tax:"",
+        AmountLeft:"",
+    })
 
+// FUNCTIONS START
+
+    function storedValues(){
+        let getStoredValues= localStorage.getItem("form")
+        return JSON.parse(getStoredValues)
+    }
+
+    // USE EFFECT HOOKS
+
+        React.useEffect(() => {
+            localStorage.setItem("form", JSON.stringify(notes) )
+            console.log(notes)
+        },[notes])
+ 
         React.useEffect(() => {
         if (notes.length===0 && !sorted){
             setSorted1(false)
+            // change variables sorted names
         }
         else if (notes.length===0 && !sorted1){
             setSorted(false)
-        }
+            }
+        });
+           
+        React.useEffect(() => {
+            setCalculateAmountDue(formData.Hours*formData.Rate)
+            }); 
 
-           });        
+        React.useEffect(() => {
+           if (Object.keys(formErrors).length===0 && isSubmit ){
+                submitForm()
+                setIsSubmit(false)
+           }
+        },[formErrors]);
+
     
-    //React.useEffect(() => {
-        // notes.map over arrray to display on every render
-
-    const [notes, setNotes] = React.useState([
-{
-    id: 1,
-    addTitle: "Rearrange Wardrobe" ,
-    addText: "Wake up at 9am and start sorting clothes",
-    status: "Completed",
-    isChecked: isChecked
-}, {
-    id: 2,
-    addTitle: "Gym" ,
-    addText: "Hit the gym after work",
-    status: "Not Completed",
-    isChecked: isChecked
-},{
-    id: 3,
-    addTitle: "Emails" ,
-    addText: "Read through daily emails",
-    status: "Not Completed",
-    isChecked: isChecked
-},{
-    id: 4,
-    addTitle: "Skin Care" ,
-    addText: "Start new skin care routine",
-    status: "New Notes",
-    isChecked: isChecked
-},{
-    id: 5,
-    addTitle: "Meditate" ,
-    addText: "Start meditating before going to sleep",
-    status: "New Notes",
-    isChecked: isChecked
-}
-]
-)
-
-
-    const [formData, setFormData] = React.useState(
-        {id: notes.length+1, addTitle: "", addText: "",status:""}
-    )
+    //HANDLE FUNCTIONS
 
     function handleChange(event, id) {
         const {name, value, type, checked} = event.target
@@ -78,25 +83,75 @@ export default function AddNote(){
         let tempNotes= notes.map((note) => 
         note.id===id ? {...note, isChecked:checked} : note
         )
-
         setNotes(tempNotes)
     }
 
+    function formSubmitAll(e){
+        e.preventDefault()
 
-    function submitForm(event){
-        event.preventDefault()
+      if (validateEntry(formData)){
+      setIsSubmit(true)
+      setFormErrors(validateEntry(formData))
+        }
+    }
 
-        const newFormData= {
-            id: notes.length+1,
-            addTitle: formData.addTitle,
-            addText: formData.addText,
-            status: "New Notes",
+    function validateEntry (values){
+        const errors= {}
+        if (!Number.isInteger(parseInt(values.Hours))){
+            errors.Hours= "titleInputError"
         }
 
-        const newFormDatas= [...notes, newFormData]
+        if (!Number.isInteger(parseInt(values.Rate))){
+            errors.Rate= "titleInputError"
+        }
+      
+        if (!Number.isInteger(parseInt(values.Extra))){
+            errors.Extra= "titleInputError"
+        }
+       
+        if (!Number.isInteger(parseInt(values.Tax))){
+            errors.Tax= "titleInputError"
+        }
+      return errors
+    }
+
+
+    function submitForm(){
+       
+        const newFormData= {
+            id: notes.length+1,
+            ShiftDate: formData.ShiftDate,
+            Company: formData.Company,
+            Hours: parseInt(formData.Hours),
+            Rate: formData.Rate,
+            Extra: formData.Extra,
+            Paid: formData.Paid,
+            AmountDue: parseInt(formData.Extra)+(parseInt(formData.Hours)*parseInt(formData.Rate)),
+            Tax: (calculateAmountDue*formData.Tax/100),
+            AmountLeft: calculateAmountDue-(calculateAmountDue*formData.Tax/100),
+        }
+
+        const newFormDatas= [...notes, newFormData] 
+
+        setCalculateAmountDue(formData.Tax)
         setNotes(newFormDatas)
+        
+        //TOGGLE CLOSE "ADD SHIFT" BOX
         toggleShown()
-        setFormData({id: notes.length+1, addTitle: "", addText: ""})
+
+        //RESET INPUT FIELDS AFTER SUBMIT
+        setFormData({
+            id: notes.length+1,
+            ShiftDate: "",
+            Company: "",
+            Hours:"",
+            Rate: "",
+            Extra:"",
+            Paid:"",
+            AmountDue:"",
+            Tax:"",
+            AmountLeft:"",
+        })
     
         if (notes.length=1){
             setSorted1(true)
@@ -104,31 +159,82 @@ export default function AddNote(){
         else {}
     }
 
-    const [isShown, setIsShown] = React.useState(false)
-    const [deleteBtn, setDeleteBtn]= React.useState(false)
-
     function toggleShown(){
         setIsShown(prevShown => !prevShown)
+        setToggleUpdate(false)
     }
 
-    function editNotes(currentNoteId){
+    function editNotes(e, currentNoteId){
         setIsShown(true)
-        // setFormData(oldNotes=>{
-        //     for (let i=0; i<oldNotes.length; i++){
-        //         if (currentNoteId===oldNotes[i].id){
-        //             return ({...oldNotes[i], addTitle:"nearly there..."})
-        //         }
-        //         else {console.log("hello")}
-        //     }
-        // })
+        setToggleUpdate(true)
+        let notesEdit= notes.slice()
+        for (let i=0; i<notesEdit.length; i++){
+           let taxInt=notesEdit[i].Tax/(notesEdit[i].Hours*notesEdit[i].Rate)
+
+            if (currentNoteId===notesEdit[i].id){
+                setPushedCurrentNoteId(currentNoteId)
+                setFormData({...notesEdit[i], Tax:taxInt*100})
+            }
+        }
     }
+
+    function updateForm(event){
+        event.preventDefault()
+        setToggleUpdate(false)
+        
+        let updateNotes= notes.map((note) => 
+        pushedCurrentNoteId===note.id ? 
+        {...note,
+            id: formData.id,
+            ShiftDate: formData.ShiftDate,
+            Company: formData.Company,
+            Hours: parseInt(formData.Hours),
+            Rate: formData.Rate,
+            Extra: formData.Extra,
+            Paid: formData.Paid,
+            AmountDue: parseInt(formData.Extra)+(parseInt(formData.Hours)*parseInt(formData.Rate)),
+            Tax: (calculateAmountDue*formData.Tax/100),
+            AmountLeft: calculateAmountDue-(calculateAmountDue*formData.Tax/100),
+        }  
+        : 
+        note
+        )
+        setNotes(updateNotes)
+        setIsShown(false)    
+        setFormData({
+            id: notes.length+1,
+            ShiftDate: "",
+            Company: "",
+            Hours:"",
+            Rate: "",
+            Extra:"",
+            Paid:"",
+            AmountDue:"",
+            Tax:"",
+            AmountLeft:"",
+        })
+    }
+
 
 
     function closeSideBarNotes(){
         setIsShown(false)
+        setToggleUpdate(false)
+        setIsSubmit(false)
+        setFormData({
+            id: notes.length+1,
+            ShiftDate: "",
+            Company: "",
+            Hours:"",
+            Rate: "",
+            Extra:"",
+            Paid:"",
+            AmountDue:"",
+            Tax:"",
+            AmountLeft:"",
+        })
     }
 
-    const [notesToDelete, setNotesToDelete] =React.useState([]);
     function handleCheckBoxChange(event, noteId){
 
         let toDeleteArray= notesToDelete
@@ -146,7 +252,6 @@ export default function AddNote(){
             setDeleteBtn(false)
         }
             setNotesToDelete(toDeleteArray)
-            //console.log(toDeleteArray)
     }
 
     function handleChangeDeleteBtnNo(){
@@ -164,132 +269,51 @@ export default function AddNote(){
     
     function handleChangeDeleteBtnYes(){
         setisChecked(false)
-         let newNotesArray=notes.slice()
+        let newNotesArray=notes.slice()
         newNotesArray=newNotesArray.filter((note) =>{
             if (!notesToDelete.includes(note.id)){
                 return true
             }            
-        }
-    )
-    setNotes(newNotesArray)
-    setDeleteBtn(false)
-    setNotesToDelete([])   
+        })
+        setNotes(newNotesArray)
+        setDeleteBtn(false)
+        setNotesToDelete([])   
     }
     
     function selectAllId(event){
         
         if (event.target.checked){
-            setisChecked(true)
-        let idAllClick= []
-        let newNotesToDelete=[]
-    for ( let i=0;i<notes.length; i++){
-        newNotesToDelete.push(notes[i].id)
-        console.log(newNotesToDelete)
-        let total= {...notes[i], isChecked:true } 
-        idAllClick.push(total)
-        setDeleteBtn(true)
+                setisChecked(true)
+            let idAllClick= []
+            let newNotesToDelete=[]
+                for ( let i=0;i<notes.length; i++){
+                    newNotesToDelete.push(notes[i].id)
+                    let total= {...notes[i], isChecked:true } 
+                    idAllClick.push(total)
+                    setDeleteBtn(true)
+                }
+        setNotes(idAllClick)
+        setNotesToDelete(newNotesToDelete)
+        }
+
+        else{
+            setisChecked(false)
+            setNotesToDelete([])
+            let idallUnclick= []
+                for ( let i=0;i<notes.length; i++){
+                    let total= {...notes[i], isChecked:false } 
+                    idallUnclick.push(total)
+                    setDeleteBtn(false)
+                }
+        setNotes(idallUnclick)
+        }
     }
-    setNotes(idAllClick)
-    setNotesToDelete(newNotesToDelete)
-    }
 
-    else{
-        setisChecked(false)
-        setNotesToDelete([])
-        let idallUnclick= []
-    for ( let i=0;i<notes.length; i++){
-        let total= {...notes[i], isChecked:false } 
-        idallUnclick.push(total)
-        setDeleteBtn(false)
-    }
-    setNotes(idallUnclick)
-    }
-
-}
-
-
-        // console.log(notes.includes(notesToDelete))
-        // for (let i=0; i<notes.length;i++){
-        //     // let holdDelete=finalDelete
-        //     let allHeld= notes[i].id
-        //     for (let i=0; i<notesToDelete.length;i++){
-        //          console.log(notesToDelete[i],allHeld)
-        //          console.log(notesToDelete[i]===allHeld)
-        //          notesToDelete.includes(note.id)
-        //         // if (notesToDelete[i]!==allHeld){
-        //         //     holdDelete.push("all the numbers that dont match")
-        //         //     setNotes(holdDelete)
-
-        //         // setNotes(oldNotes => oldNotes.filter(allHeld!==notesToDelete))
-
-                    //console.log(allHeld)
-                    // console.log(notesToDelete[i],allHeld)
-                    // console.log(notesToDelete[i]!==allHeld)
-
-
-                  //  console.log(holDelete.splice(i,1))
-
-                    // let positionInNotes=notes.findIndex((note)=>console.log(note.id!==notesToDelete))
-                    // console.log(positionInNotes)
-                    // console.log(allHeld)
-                    // console.log(allHeld[i])
-                    // console.log(notes[allHeld-1])
-                    // holdDelete.push(notes[allHeld-1])
-                
-            
-            // setNotes(oldNotes => oldNotes.filter(allHeld!==notesToDelete[i]||"undefined"))
-            // }
-        // let result= notes.filter(notes[i].id !== notesToDelete)
-        // console.log(result)
-        // setNotes(oldNotes => oldNotes.filter(notes[i].id !== notesToDelete[i]))
-        // }
-
-        // let holdDelete=finalDelete
-        //  //   let allHeld= notes[i].id
-        //     for (let p=0; p<notesToDelete.length;p++){
-        //         // console.log(notes[i].id, notes[p].id)
-        //        console.log(notes[p].id)
-        //         if (notes[i].id!==notesToDelete[p]){
-        //         //   console.log(notes[i].id!==notesToDelete[p])
-                    
-        //         //    holdDelete.push(...allHeld)
-        //         }
-        // setNotes(oldNotes => oldNotes.filter(notes[i].id !== notesToDelete))
-        // const toDeleteArray=[]
-        // for (let i=0; i<notes.length;i++){
-        //     if (notes[i].id===textId){
-        //         toDeleteArray.unshift(...notes)
-        //         console.log(...notes)
-        //     }
-        //     else{
-        //         toDeleteArray.push("")
-        //     }
-        // }
-        // // setNotes(toDeleteArray)
-
-    
-
-        // const position= notes.findIndex((text) => {
-        //     if (text.id === textId){
-        //         toDeleteArray.push(textId)
-        //         return textId===text.id
-        //     }
-        //     else {console.log("ids aint matching bra ")}
-        //     })
-        //     console.log(position)
-        //     console.log(toDeleteArray)
-      
-        // const numbers= [55,32,54,23,75,3,6,7,4]
-        // React.useEffect(() => {
-        //     setNotes(sorted)
-        //     }, [sorted]);
-
-        const [sorted, setSorted]= React.useState(false)
         function sortAsc(){
             if (notes.length>0){
                 setSorted1(prevSorted1 => !prevSorted1)
                 let sumAsc=notes.sort(function compareFunc(a,b){
-                    return b.id- a.id
+                    return b.AmountDue- a.AmountDue
                  }
             )
             console.log(sumAsc)
@@ -298,50 +322,59 @@ export default function AddNote(){
             else{
                 setSorted1(false)
                 setSorted(false)
+            }
         }
-    }
 
-    const [sorted1, setSorted1]= React.useState(true)
     function sortDesc(){
         if (notes.length>0){
-        setSorted(prevSorted => !prevSorted)
-        let sumDesc=notes.sort(function compareFunc(a,b){
-            return a.id -b.id
-         }
-    )
-    console.log(sumDesc)
-    setSorted1(sumDesc)
+            setSorted(prevSorted => !prevSorted)
+            let sumDesc=notes.sort(function compareFunc(a,b){
+                return a.AmountDue -b.AmountDue
+            })
+            setSorted1(sumDesc)
         }
         else{
-        setSorted(false)
-        setSorted1(false)
+            setSorted(false)
+            setSorted1(false)
+        }
     }
 
-}
-
-
-console.log(notes)
-console.log(sorted)
-console.log(sorted1)
-console.log(notes.length)
 
     return(
+        
     <div className="container">
+
+    {/* Animated Background Start */}
+    <div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+    {/* Animated Background End */}
+
         <SideTasksCompleted notes={notes} />
         <div className="tableContainer">
             <table cellPadding="5rem">
                 <thead>
                     <tr>
                         <th className="th-ID"> <input type="checkbox"checked={isChecked} onChange={(event) => selectAllId (event)}/>
-                        ID  
-                        {/* {sorted ? <AiOutlineArrowDown onClick={sortDesc} /> : <AiOutlineArrowUp onClick={sortAsc} />} */}
+                        {/* ID  
+                        {sorted ? <TiArrowSortedDown onClick={sortDesc} />:"" }
+                        {sorted1? <TiArrowSortedUp onClick={sortAsc} />:"" } */}
+                        </th>
+                        <th>Shift Date</th>
+                        <th>Company</th>
+                        <th>Hours</th>
+                        <th>Rate</th>
+                        <th>Extra</th>
+                        <th>Paid</th>
+                        <th>Amount Due
                         {sorted ? <TiArrowSortedDown onClick={sortDesc} />:"" }
                         {sorted1? <TiArrowSortedUp onClick={sortAsc} />:"" }
                         </th>
-                        <th>Title</th>
-                        <th>Content</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th>Tax</th>
+                        <th>Amount left</th>
+                        <th>Edit</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -354,12 +387,19 @@ console.log(notes.length)
                         checked={eachNote.isChecked}
                         name="isChecked"
                         />
-                        <span className="Th-No">{eachNote.id}</span>
                         </td>
-                        <td>{eachNote.addTitle}</td>
-                        <td>{eachNote.addText}</td>
-                        <td>{eachNote.status}</td>
-                        <td><button onClick={editNotes}><AiFillEdit /></button>
+                        <td>{eachNote.ShiftDate}</td>
+                        <td>{eachNote.Company}</td>
+                        <td>{eachNote.Hours}</td>
+                        <td>£{eachNote.Rate}</td>
+                        <td>£{eachNote.Extra}</td>
+                        <td>{eachNote.Paid}</td>
+                        <td className="styleAmountDue">£{eachNote.AmountDue}</td>
+                        <td className="styleTax">£{eachNote.Tax}</td>
+                        <td className="styleAmountLeft">£{eachNote.AmountLeft}</td>
+                        <td><button className="FaEditBtn" onClick={(e) => editNotes(e,eachNote.id)}>
+                            <FaEdit className="FaEdit" />
+                            </button>
                         </td>
                     </tr>
                         )
@@ -367,7 +407,7 @@ console.log(notes.length)
                 </tbody>
             </table>
             <div className="addBtn">
-                <button className="activeAddBtn" onClick={toggleShown}>{isShown?"Hide Note":"Add Note"}</button>
+                <button className="activeAddBtn" onClick={toggleShown}>{isShown?"Hide Shift":"Add Shift"}</button>
              </div>
             <div className="alertComp">
                 <div className="alertComp1">
@@ -375,13 +415,34 @@ console.log(notes.length)
                                 close={closeSideBarNotes}
                                 handleChange= {handleChange}
                                 submitForm={submitForm}
-                                addTitle={formData.addTitle}
-                                addText={formData.addText}
+                                updateForm= {updateForm}
+                                formSubmitAll= {formSubmitAll}
+                                formErrorsHours= {formErrors.Hours}
+                                formErrorsRate= {formErrors.Rate}
+                                formErrorsExtra= {formErrors.Extra}
+                                formErrorsTax= {formErrors.Tax}
+                                isSubmit={isSubmit}
+                                toggleUpdate={toggleUpdate}
+                                // formData= {formData}
+                                ShiftDate= {formData.ShiftDate}
+                                Company={formData.Company}
+                                Hours={formData.Hours}
+                                Rate= {formData.Rate}
+                                Extra={formData.Extra}
+                                Paid={formData.Paid}
+                                AmountDue={formData.AmountDue}
+                                Tax={formData.Tax}
+                                AmountLeft={formData.AmountLeft}
                                 />}
                 </div>
                 {deleteBtn && <SideDeleteNotes closeNoBtn={handleChangeDeleteBtnNo} openYesBtn={handleChangeDeleteBtnYes} />}
             </div>
         </div>
+
+    <div className="notesContainer">
+        
+    </div>
+
     </div>
     )
 }
